@@ -7,3 +7,8 @@ output "ecs_service_name" {
   description = "Name of the running ECS service"
   value       = module.ecs.service_name
 }
+
+output "ecr_repository_url" {
+  description = "ECR repository URL to push images"
+  value       = module.ecr.repository_url
+}

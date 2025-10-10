@@ -30,3 +30,10 @@ variable "log_retention_days" {
   type    = number
   default = 7
 }
+
+# Tag of the image to deploy from the created ECR repo
+variable "image_tag" {
+  type        = string
+  description = "Image tag to deploy from repository_url"
+  default     = "latest"
+}

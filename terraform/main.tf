@@ -25,7 +25,7 @@ data "aws_iam_role" "lab_role" {
 module "ecs" {
   source             = "./modules/ecs"
   service_name       = var.service_name
-  image              = "${module.ecr.repository_url}:latest"
+  image              = "${module.ecr.repository_url}:${var.image_tag}"
   container_port     = var.container_port
   subnet_ids         = module.network.subnet_ids
   security_group_ids = [module.network.security_group_id]
@@ -37,19 +37,3 @@ module "ecs" {
 }
 
 
-// Build & push the Go app image into ECR
-resource "docker_image" "app" {
-  # Use the URL from the ecr module, and tag it "latest"
-  name = "${module.ecr.repository_url}:latest"
-
-  build {
-    # relative path from terraform/ → src/
-    context = "../src"
-    # Dockerfile defaults to "Dockerfile" in that context
-  }
-}
-
-resource "docker_registry_image" "app" {
-  # this will push :latest → ECR
-  name = docker_image.app.name
-}
