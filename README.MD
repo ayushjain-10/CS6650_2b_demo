@@ -111,6 +111,73 @@ cd /Users/ayushjain/Documents/Grad/CS6620/CS6650_2b_demo/terraform
 terraform destroy -auto-approve
 ```
 
+### Load Testing with Locust
+
+The `locust/` folder contains two load testing configurations:
+
+#### **Setup Locust Environment:**
+```bash
+cd /Users/ayushjain/Documents/Grad/CS6620/CS6650_2b_demo/locust
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### **Running Locust Tests:**
+
+**Option 1: Interactive Web UI (Recommended for beginners)**
+```bash
+# Start Locust web interface
+locust -f locustfile_fasthttp.py --host http://$PUBLIC_IP:8080
+# Open browser to: http://localhost:8089
+# Set users, spawn rate, and start test
+```
+
+**Option 2: Headless Mode (Command line)**
+```bash
+# FastHttpUser (recommended)
+locust -f locustfile_fasthttp.py --host http://$PUBLIC_IP:8080 -u 50 -r 10 -t 1m --headless --only-summary
+
+# HttpUser (for comparison)
+locust -f locustfile.py --host http://$PUBLIC_IP:8080 -u 50 -r 10 -t 1m --headless --only-summary
+```
+
+**Option 3: Custom Test Parameters**
+```bash
+# High load test
+locust -f locustfile_fasthttp.py --host http://$PUBLIC_IP:8080 -u 200 -r 20 -t 5m --headless
+
+# Quick smoke test
+locust -f locustfile_fasthttp.py --host http://$PUBLIC_IP:8080 -u 10 -r 2 -t 30s --headless
+```
+
+**Parameters Explained:**
+- `-u`: Number of users to simulate
+- `-r`: Spawn rate (users added per second)
+- `-t`: Test duration (e.g., 1m, 30s, 5m)
+- `--headless`: Run without web UI
+- `--only-summary`: Show only final results
+
+#### **HttpUser vs FastHttpUser Performance Comparison:**
+```
+Test Configuration: 50 users, 10 spawn rate, 1 minute duration
+Target: ECS Fargate service (34.218.41.165:8080)
+```
+
+| Metric | HttpUser | FastHttpUser | Improvement |
+|--------|----------|--------------|-------------|
+| **Total Requests** | 1,673 | 1,823 | **+9.0%** |
+| **Requests/sec** | 27.94 | 30.55 | **+9.3%** |
+| **Avg Response Time** | 494ms | 332ms | **-32.8%** |
+| **GET /products** | 796ms | 490ms | **-38.4%** |
+| **POST create** | 209ms | 174ms | **-16.7%** |
+
+**Key Findings:**
+- FastHttpUser generates 9% more requests in same time
+- 33% faster average response times
+- Better resource utilization with asynchronous I/O
+- Uses `geventhttpclient` vs synchronous `requests` library
+
 ### .gitignore and Sensitive Data
 Keep large/sensitive files out of git:
 - Terraform state and cache: `.terraform/`, `*.tfstate*`
