@@ -1,4 +1,58 @@
+# Terraform
 **.tfvars
 **.tfstate
 **.tfstate.*
 **/.terraform/
+.terraform.lock.hcl
+terraform.tfstate.backup
+
+# Python / Locust
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+ENV/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+server
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+/tmp/
+*.txt
+
+# AWS / Credentials
+.env
+*.pem
+*.key
+credentials
+config
+
+# OS
+Thumbs.db
+.DS_Store
