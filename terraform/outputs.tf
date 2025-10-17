@@ -12,3 +12,8 @@ output "ecr_repository_url" {
   description = "ECR repository URL to push images"
   value       = module.ecr.repository_url
 }
+
+output "alb_dns_name" {
+  description = "Public DNS name of the Application Load Balancer"
+  value       = module.alb.dns_name
+}

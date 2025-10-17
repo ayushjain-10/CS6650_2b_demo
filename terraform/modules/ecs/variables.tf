@@ -49,6 +49,24 @@ variable "region" {
   description = "AWS region (for awslogs driver)"
 }
 
+variable "target_group_arn" {
+  type        = string
+  description = "ALB target group ARN for the service"
+  default     = null
+}
+
+variable "min_capacity" {
+  type        = number
+  description = "Minimum desired task count for autoscaling"
+  default     = 2
+}
+
+variable "max_capacity" {
+  type        = number
+  description = "Maximum desired task count for autoscaling"
+  default     = 4
+}
+
 variable "cpu" {
   type        = string
   default     = "256"

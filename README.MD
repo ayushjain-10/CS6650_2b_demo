@@ -1,6 +1,20 @@
 ## CS6650 Products API - Deploy and Use
 
-This repo contains a simple Products API (Go + Gin) packaged in Docker and deployed on AWS ECS Fargate via Terraform. Follow the steps below to deploy on any machine and test all API responses.
+This repo contains a simple Products API (Go + Gin) packaged in Docker and deployed on AWS ECS Fargate via Terraform with Application Load Balancer and Auto Scaling. Follow the steps below to deploy on any machine and test all API responses.
+
+**📊 [HW6 Load Testing & Auto-Scaling Report](./HW6/LOAD_TEST_REPORT.md)** - Complete analysis of performance bottlenecks, horizontal scaling, and resilience testing.
+
+### Quick Access
+
+**Load Balancer DNS:** `CS6650L2-alb-67761129.us-west-2.elb.amazonaws.com`
+
+**Live Endpoints:**
+- Health: http://CS6650L2-alb-67761129.us-west-2.elb.amazonaws.com/health
+- Search: http://CS6650L2-alb-67761129.us-west-2.elb.amazonaws.com/products/search?q=Alpha
+- Get All: http://CS6650L2-alb-67761129.us-west-2.elb.amazonaws.com/products
+- Get By ID: http://CS6650L2-alb-67761129.us-west-2.elb.amazonaws.com/products/1
+
+---
 
 ### Prepare Credentials
 

@@ -17,6 +17,15 @@ module "logging" {
   retention_in_days = var.log_retention_days
 }
 
+module "alb" {
+  source             = "./modules/alb"
+  service_name       = var.service_name
+  container_port     = var.container_port
+  vpc_id             = module.network.vpc_id
+  subnet_ids         = module.network.subnet_ids
+  security_group_ids = [module.network.security_group_id]
+}
+
 # Reuse an existing IAM role for ECS tasks
 data "aws_iam_role" "lab_role" {
   name = "LabRole"
@@ -34,6 +43,7 @@ module "ecs" {
   log_group_name     = module.logging.log_group_name
   ecs_count          = var.ecs_count
   region             = var.aws_region
+  target_group_arn   = module.alb.target_group_arn
 }
 
 
