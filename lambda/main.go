@@ -25,25 +25,23 @@ type Order struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
-// PaymentProcessor simulates the same 3-second payment delay as ECS workers
+
 func processPayment(order *Order) error {
 	fmt.Printf("Processing payment for order %s (customer: %d)\n", order.OrderID, order.CustomerID)
 	
-	// Simulate 3-second payment verification delay (same as ECS worker)
+
 	time.Sleep(3 * time.Second)
 	
 	fmt.Printf("Payment completed for order %s\n", order.OrderID)
 	return nil
 }
 
-// Handler processes SNS messages
 func handler(ctx context.Context, snsEvent events.SNSEvent) error {
 	startTime := time.Now()
 	
 	for _, record := range snsEvent.Records {
 		snsRecord := record.SNS
 		
-		// Parse the order from SNS message
 		var order Order
 		if err := json.Unmarshal([]byte(snsRecord.Message), &order); err != nil {
 			fmt.Printf("Error parsing order: %v\n", err)

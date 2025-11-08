@@ -23,6 +23,33 @@ resource "aws_ecs_task_definition" "this" {
       containerPort = var.container_port
     }]
 
+    environment = [
+      {
+        name  = "DB_HOST"
+        value = split(":", var.db_endpoint)[0]
+      },
+      {
+        name  = "DB_PORT"
+        value = "3306"
+      },
+      {
+        name  = "DB_NAME"
+        value = var.db_name
+      },
+      {
+        name  = "DB_USER"
+        value = "admin"
+      },
+      {
+        name  = "DB_PASSWORD"
+        value = var.db_password
+      },
+      {
+        name  = "DYNAMODB_TABLE_NAME"
+        value = var.dynamodb_table_name
+      }
+    ]
+
     logConfiguration = {
       logDriver = "awslogs"
       options = {

@@ -31,6 +31,20 @@ data "aws_iam_role" "lab_role" {
   name = "LabRole"
 }
 
+module "rds" {
+  source                 = "./modules/rds"
+  service_name           = var.service_name
+  vpc_id                 = module.network.vpc_id
+  subnet_ids             = module.network.subnet_ids
+  ecs_security_group_id  = module.network.security_group_id
+  db_password            = var.db_password
+}
+
+module "dynamodb" {
+  source       = "./modules/dynamodb"
+  service_name = var.service_name
+}
+
 module "ecs" {
   source             = "./modules/ecs"
   service_name       = var.service_name
@@ -44,6 +58,14 @@ module "ecs" {
   ecs_count          = var.ecs_count
   region             = var.aws_region
   target_group_arn   = module.alb.target_group_arn
+  
+  # Pass RDS connection details as environment variables
+  db_endpoint = module.rds.db_instance_endpoint
+  db_name     = module.rds.db_name
+  db_password = var.db_password
+  
+  # Pass DynamoDB table name
+  dynamodb_table_name = module.dynamodb.table_name
 }
 
 

@@ -183,12 +183,24 @@ func initAWS() {
 
 	snsClient = sns.NewFromConfig(cfg)
 	sqsClient = sqs.NewFromConfig(cfg)
+	
+	// Initialize DynamoDB client
+	InitDynamoDB(cfg)
+	
 	fmt.Println("AWS SDK initialized successfully")
 }
 
 func main() {
 	// Initialize AWS SDK
 	initAWS()
+
+	// Initialize Database (MySQL RDS)
+	fmt.Println("Initializing database connection...")
+	if err := InitDB(); err != nil {
+		fmt.Printf("⚠️  Database initialization failed: %v\n", err)
+		fmt.Println("Continuing without database (cart endpoints will be unavailable)")
+	}
+	defer CloseDB()
 
 	// Generate 100,000 products at startup
 	fmt.Println("Generating 100,000 products...")
@@ -223,7 +235,31 @@ func main() {
 	router.POST("/orders/async", postOrderAsync)
 	router.GET("/orders/stats", getOrderStats)
 
+	// HW8: Shopping Cart endpoints (MySQL-backed)
+	// Legacy endpoints (backward compatibility)
+	router.POST("/carts", createCart)
+	router.GET("/carts/:cart_id", getCart)
+	router.POST("/carts/:cart_id/items", addItemToCart)
+	router.PUT("/carts/:cart_id/items/:item_id", updateCartItem)
+	router.DELETE("/carts/:cart_id/items/:item_id", deleteCartItem)
+	router.DELETE("/carts/:cart_id", deleteCart)
+	router.POST("/carts/:cart_id/checkout", checkoutCart)
+	router.GET("/customers/:customer_id/carts", getCustomerCarts)
+
+	// Part 3: Required Shopping Cart API endpoints (MySQL)
+	router.POST("/shopping-carts", createShoppingCart)
+	router.GET("/shopping-carts/:id", getShoppingCart)
+	router.POST("/shopping-carts/:id/items", addItemToShoppingCart)
+
+	// Part 3b: Shopping Cart API endpoints (DynamoDB)
+	router.POST("/shopping-carts/dynamodb", createShoppingCartDynamoDB)
+	router.GET("/shopping-carts/dynamodb/:id", getShoppingCartDynamoDB)
+	router.POST("/shopping-carts/dynamodb/:id/items", addItemToShoppingCartDynamoDB)
+	router.GET("/customers/dynamodb/:customer_id/carts", getCustomerCartsDynamoDB)
+
 	fmt.Println("Starting server on :8080")
+	fmt.Println("📦 Product search endpoints: /products/search")
+	fmt.Println("🛒 Shopping cart endpoints: /carts")
 	router.Run(":8080")
 }
 

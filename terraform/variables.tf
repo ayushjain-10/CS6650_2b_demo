@@ -37,3 +37,11 @@ variable "image_tag" {
   description = "Image tag to deploy from repository_url"
   default     = "latest"
 }
+
+# Database password (should be set via environment variable or terraform.tfvars)
+variable "db_password" {
+  type        = string
+  description = "Master password for RDS MySQL instance"
+  sensitive   = true
+  default     = "MySecurePass123!"
+}

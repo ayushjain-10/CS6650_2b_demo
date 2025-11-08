@@ -78,3 +78,28 @@ variable "memory" {
   default     = "512"
   description = "Memory (MiB)"
 }
+
+variable "db_endpoint" {
+  type        = string
+  description = "RDS database endpoint"
+  default     = ""
+}
+
+variable "db_name" {
+  type        = string
+  description = "RDS database name"
+  default     = ""
+}
+
+variable "db_password" {
+  type        = string
+  description = "RDS database password"
+  sensitive   = true
+  default     = ""
+}
+
+variable "dynamodb_table_name" {
+  type        = string
+  description = "DynamoDB table name for shopping carts"
+  default     = ""
+}
